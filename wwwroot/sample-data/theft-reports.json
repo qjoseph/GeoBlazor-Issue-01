@@ -1,0 +1,101 @@
+﻿[
+  {
+    "id": "1234",
+    "vin": "123456788LPR15572",
+    "licensePlate": null,
+    "type": "M1",
+    "odometer": null,
+    "brand": "JEEP",
+    "brandDescription": null,
+    "model": "689",
+    "modelDescription": null,
+    "energy": null,
+    "color": null,
+    "mineType": null,
+    "manufacturedAt": null,
+    "from": null,
+    "language": null,
+    "stolenVehicleLocatorMode": "ACTIVE",
+    "crankMode": "ACTIVE",
+    "status": "STOP",
+    "owner": {
+      "name": null,
+      "msisdn": "001100000000002",
+      "address": {
+        "line1": "17 Rue Mathurin Brissonneau",
+        "line2": null,
+        "line3": null,
+        "postalCode": "44100",
+        "city": "NANTES"
+      }
+    },
+    "positions": [
+      {
+        "latitude": 47.182987,
+        "longitude": -1.576247,
+        "estimatedPositionError": 75,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T14:22:00.145",
+        "integratedAt": "2022-11-14T14:22:00.145"
+      },
+      {
+        "latitude": 47.200292,
+        "longitude": -1.570681,
+        "estimatedPositionError": 55,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T14:32:00.145",
+        "integratedAt": "2022-11-14T14:32:00.145"
+      },
+      {
+        "latitude": 47.207953,
+        "longitude": -1.579646,
+        "estimatedPositionError": 25,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T14:42:00.145",
+        "integratedAt": "2022-11-14T14:42:00.145"
+      },
+      {
+        "latitude": 47.201149,
+        "longitude": -1.584099,
+        "estimatedPositionError": 0,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T14:52:00.145",
+        "integratedAt": "2022-11-14T14:52:00.145"
+      },
+      {
+        "latitude": 47.251149,
+        "longitude": -1.884099,
+        "estimatedPositionError": 60,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T15:52:00.145",
+        "integratedAt": "2022-11-14T15:52:00.145"
+      },
+      {
+        "latitude": 47.281149,
+        "longitude": -1.804099,
+        "estimatedPositionError": 75,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-15T15:52:00.145",
+        "integratedAt": "2022-11-15T15:52:00.145"
+      }
+    ]
+  }
+]

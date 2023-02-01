@@ -1,0 +1,73 @@
+﻿[
+  {
+    "theftReportId": "1234",
+    "positions": [
+      {
+        "latitude": 47.182987,
+        "longitude": -1.576247,
+        "estimatedPositionError": 75,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T14:22:00.145",
+        "integratedAt": "2022-11-14T14:22:00.145"
+      },
+      {
+        "latitude": 47.200292,
+        "longitude": -1.570681,
+        "estimatedPositionError": 55,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T14:32:00.145",
+        "integratedAt": "2022-11-14T14:32:00.145"
+      },
+      {
+        "latitude": 47.207953,
+        "longitude": -1.579646,
+        "estimatedPositionError": 25,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T14:42:00.145",
+        "integratedAt": "2022-11-14T14:42:00.145"
+      },
+      {
+        "latitude": 47.201149,
+        "longitude": -1.584099,
+        "estimatedPositionError": 0,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T14:52:00.145",
+        "integratedAt": "2022-11-14T14:52:00.145"
+      },
+      {
+        "latitude": 47.251149,
+        "longitude": -1.884099,
+        "estimatedPositionError": 60,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-14T15:52:00.145",
+        "integratedAt": "2022-11-14T15:52:00.145"
+      },
+      {
+        "latitude": 47.281149,
+        "longitude": -1.804099,
+        "estimatedPositionError": 75,
+        "altitude": 0.0,
+        "estimatedAltitudeError": 0,
+        "direction": "0",
+        "enginePositionStatus": null,
+        "emittedAt": "2022-11-15T15:52:00.145",
+        "integratedAt": "2022-11-15T15:52:00.145"
+      }
+    ]
+  }
+]
