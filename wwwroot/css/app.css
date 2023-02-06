@@ -1,4 +1,4 @@
-html, body, #app, main, .map-wrapper {
+html, body, #app, main, .map-wrapper, .map-container {
     height: 100vh;
 }
 
@@ -61,7 +61,7 @@ html, body, #app, main, .map-wrapper {
 }
 
     .loading-progress-text:after {
-        content: var(--blazor-load-percentage-text, "Loading");
+        content: var(--blazor-load-percentage-text, "Chargement en cours");
     }
 
 #viewDiv {

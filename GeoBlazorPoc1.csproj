@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="dymaptic.GeoBlazor.Core" Version="1.2.0" />
+    <PackageReference Include="dymaptic.GeoBlazor.Core" Version="2.0.0-beta-1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.2" PrivateAssets="all" />
     <PackageReference Include="MudBlazor.ThemeManager" Version="1.0.7" />

@@ -21,8 +21,8 @@
                 {
                     @if (isPositionExpanded || location.IsSelected)
                     {
-                        <Graphic>
-                            <Point Longitude="@location.Position.Longitude" Latitude="@location.Position.Latitude" />
+                        <Graphic @ref="@location.GraphicRef">
+                            <Point Longitude="@location.Position.Longitude" Latitude="@location.Position.Latitude" @ref="@location.PointRef" />
                             <SimpleMarkerSymbol Color="@(location.IsSelected ? new MapColor("red") : @location.Color)" Size="@(location.IsSelected ? 24 : location.Size)">
                                 <Outline Color="@location.OutlineColor" Width="1" />
                             </SimpleMarkerSymbol>
@@ -103,8 +103,25 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        // Try to force state update when an element is update // Not working
-        //Positions.ListChanged += async (evt, arg) => { Logger.LogInformation($"Item selected : {arg?.PropertyDescriptor?.Name} {arg?.PropertyDescriptor?.DisplayName} {arg?.PropertyDescriptor?.Description}"); /*await InvokeAsync(() => StateHasChanged());*/ };
+        // we need to update graphic manually for the moment -> GeoBlazor bug
+        /*Positions.ListChanged += async (evt, arg) =>
+        {
+            await InvokeAsync(async () =>
+            {
+                foreach(var position in Positions)
+                {
+                    if (position.GraphicRef is not null)
+                        await position.GraphicRef.UpdateComponent();
+                }
+
+                // Hack (the first element wont be update the first time (only the first element))
+                if (arg.NewIndex == 0 && Positions.Count > 0 && Positions.First() is LocationElement firstPosition && firstPosition.GraphicRef is not null)
+                    await firstPosition.GraphicRef.UpdateComponent();
+
+                if (MapView is not null)
+                    await MapView.UpdateComponent();
+            });
+        };*/
 
         if (string.IsNullOrWhiteSpace(TheftReportID))
             return;
@@ -165,37 +182,16 @@ else
         if (newSelectedPosition is not null)
             newSelectedPosition.IsSelected = true;
 
-        StateHasChanged();
+        await GotTo(newSelectedPosition);
+    }
 
-        /*await InvokeAsync(() => {
-            var oldSelectedPosition = Positions.FirstOrDefault(x => x.IsSelected);
-            var newSelectedPosition = Positions.FirstOrDefault(x => x.Position.Equals(position));
+    private async Task GotTo(LocationElement? locationElement)
+    {
+        if (MapView is null || locationElement is null)
+            return;
 
-            if (oldSelectedPosition is not null)
-                oldSelectedPosition.IsSelected = false;
-
-            if (newSelectedPosition is not null)
-                newSelectedPosition.IsSelected = true;
-
-            StateHasChanged();
-        });*/
-
-        await MapView.UpdateComponent();
-
-        // Attempt 2, recreate the list
-        /*var tmp = new BindingList<LocationUI>(Positions.ToList());
-        Positions.Clear();
-        Positions = null
-        Positions = tmp;
-
-        // Notify state as change // Map not updated
-        StateHasChanged();
-
-        // Maybe notify state async ? // Map not updated
-        await InvokeAsync(StateHasChanged);*/
-
-        //await MapView.UpdateComponent(); // Not working
-        //MapView.Graphics.ForEach(x => MapView.UpdateGraphic(x, null)); // Not working
+        //await MapView.GoTo(locationElement.PointRef.Extent);
+        //await MapView.UpdateComponent();
     }
 
     public static List<System.Drawing.Color> GetGradientColors(System.Drawing.Color start, System.Drawing.Color end, int steps)
