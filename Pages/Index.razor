@@ -124,7 +124,8 @@ else
         };*/
 
         if (string.IsNullOrWhiteSpace(TheftReportID))
-            return;
+            //return;
+            TheftReportID = "1234";
 
         theftReport = await TheftReportService.GetTheftReport(TheftReportID, CancellationToken.None);
         //StateHasChanged();
