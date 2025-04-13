@@ -1,0 +1,213 @@
+﻿@page "/{theftReportID?}"
+@using System.Collections.ObjectModel;
+@using System.ComponentModel;
+@using GeoBlazorPoc1.Models;
+@using GeoBlazorPoc1.Services;
+@using dymaptic.GeoBlazor.Core.Components.Views
+@using dymaptic.GeoBlazor.Core.Components.Widgets
+@using dymaptic.GeoBlazor.Core.Objects
+
+@if (theftReport is not null)
+{
+    <MapView @ref="MapView"
+    Class="map-view"
+    Longitude="_longitude"
+    Latitude="_latitude"
+    Zoom="_zoom"
+    Rotation="_rotation"
+    Style="height: 100%;">
+
+        <Map>
+            <Basemap>
+                <BasemapStyle Name="BasemapStyleName.ArcgisNavigation" />
+            </Basemap>
+            <GraphicsLayer>
+                @foreach (var location in Positions)
+                {
+                    @if (isPositionExpanded || location.IsSelected)
+                    {
+                        <Graphic @ref="@location.GraphicRef">
+                            <Point Longitude="@location.Position.Longitude" Latitude="@location.Position.Latitude" />
+                            <SimpleMarkerSymbol Color="@location.ColorCalc" Size="@location.SizeCalc">
+                                <Outline Color="@location.OutlineColorCalc" Width="1" />
+                            </SimpleMarkerSymbol>
+                        </Graphic>
+                    }
+                }
+            </GraphicsLayer>
+        </Map>
+
+        <BasemapToggleWidget NextBasemapStyle="BasemapStyleName.ArcgisImagery" Position="OverlayPosition.BottomRight" />
+    </MapView>
+
+    <MudPaper id="theftReportInfoPanel" Class="absolute object-right-top" Elevation="1">
+        <MudList T="string">
+            <MudListSubheader>
+                <MudText Typo="Typo.h6">Informations</MudText>
+            </MudListSubheader>
+            <MudGrid Style="margin: 0">
+                <MudItem xs="4">
+                    <MudText Typo="Typo.body1">Dossier n°:</MudText>
+                    <MudText Typo="Typo.body1">Immatriculation:</MudText>
+                    <MudText Typo="Typo.body1">Numéro de série:</MudText>
+                    <MudText Typo="Typo.body1">Marque:</MudText>
+                    <MudText Typo="Typo.body1">Modèle:</MudText>
+                </MudItem>
+                <MudItem>
+                    <MudText Typo="Typo.body1">@TheftReportID</MudText>
+                    <MudText Typo="Typo.body1">@(theftReport?.LicencePlate ?? "n/a")</MudText>
+                    <MudText Typo="Typo.body1">@(theftReport?.Vin ?? "n/a")</MudText>
+                    <MudText Typo="Typo.body1">@(theftReport?.Brand ?? "n/a")</MudText>
+                    <MudText Typo="Typo.body1">@(theftReport?.Model ?? "n/a")</MudText>
+                </MudItem>
+            </MudGrid>
+
+            <MudListItem Text="Positions" Expanded="isPositionExpanded" ExpandedChanged="OnPositionsExpanded">
+                <NestedList>
+                    @foreach (var position in theftReportPositions.OrderByDescending(x => x.EmittedAt))
+                    {
+                        <MudTooltip Text="@position.EmittedAt.ToString()">
+                            <MudListItem Icon="@Icons.Material.Filled.GpsFixed" OnClick="@(() => OnSelectedPositionChanged(position))">
+                                @position.Latitude, @position.Longitude
+                            </MudListItem>
+                        </MudTooltip>
+                    }
+                </NestedList>
+            </MudListItem>
+        </MudList>
+    </MudPaper>
+}
+else
+{
+    <MudAlert Severity="Severity.Info" ContentAlignment="MudBlazor.HorizontalAlignment.Center" Style="height: 100%; align-items: center;">No data</MudAlert>
+}
+
+@code
+{
+    private double _latitude = 47.182987;
+    private double _longitude = -1.576247;
+    private double _zoom = 11;
+    private double _rotation;
+    private MapView? MapView { get; set; }
+    private TheftReportDto? theftReport;
+    private IEnumerable<TheftReportPosition> theftReportPositions = new List<TheftReportPosition>();
+    private IEnumerable<System.Drawing.Color> gradient = new List<System.Drawing.Color>();
+    private TheftReportPosition? selectedPoint;
+    private bool isPositionExpanded = false;
+    private BindingList<LocationElement> Positions { get; set; } = new BindingList<LocationElement>();
+
+    [Parameter]
+    public string? TheftReportID { get; set; }
+
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    [Inject]
+    ITheftReportService TheftReportService { get; set; }
+
+    [Inject]
+    ILogger<Index> Logger { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrWhiteSpace(TheftReportID))
+            TheftReportID = "1234";
+
+        try
+        {
+            theftReport = await TheftReportService.GetTheftReport(TheftReportID, CancellationToken.None);
+
+            if (theftReport is not null)
+                theftReportPositions = await TheftReportService.GetPositionsByTheftReportId(TheftReportID, CancellationToken.None);
+        }
+        catch(Exception ex)
+        {
+            Logger.LogError(ex.Message);
+        }
+
+
+        if (theftReportPositions?.Any() is false)
+            return;
+
+        var gradients = GetGradientColors(System.Drawing.ColorTranslator.FromHtml("#348AC7"), System.Drawing.ColorTranslator.FromHtml("#00d2ff"), theftReportPositions!.Count());
+
+        foreach (var element in theftReportPositions!.OrderByDescending(x => x.EmittedAt).Select((pos, index) => new { Position = pos, Index = index }))
+        {
+            bool isFirstElement = element.Index == 0;
+            var gradient = gradients.ElementAt(element.Index);
+
+            Positions.Add(new LocationElement
+            {
+                IsSelected = isFirstElement,
+                Position = element.Position,
+                Size = isFirstElement ? 24 : 12,
+                Color = isFirstElement ? new MapColor(226, 0, 26) : new MapColor(gradient.R, gradient.G, gradient.B),
+                OutlineColor = new MapColor("white")
+            });
+        }
+    }
+
+    private async Task OnPositionsExpanded(bool isExpanded)
+    {
+        isPositionExpanded = isExpanded;
+
+        var selectedPosition = Positions.OrderByDescending(x => x.Position.EmittedAt).FirstOrDefault();
+
+        if (selectedPosition is not null)
+            await OnSelectedPositionChanged(selectedPosition!.Position);
+    }
+
+    private async Task OnSelectedPositionChanged(TheftReportPosition position)
+    {
+        // First attempt
+        var oldSelectedPosition = Positions.FirstOrDefault(x => x.IsSelected);
+        var newSelectedPosition = Positions.FirstOrDefault(x => x.Position.Equals(position));
+
+        if (oldSelectedPosition is not null)
+            oldSelectedPosition.IsSelected = false;
+
+        if (newSelectedPosition is not null)
+            newSelectedPosition.IsSelected = true;
+
+        await GotTo(newSelectedPosition);
+    }
+
+    private async Task GotTo(LocationElement? locationElement)
+    {
+        if (MapView is null || locationElement is null)
+            return;
+
+        await MapView.GoTo(new List<Graphic> { locationElement.GraphicRef });
+    }
+
+    public static List<System.Drawing.Color> GetGradientColors(System.Drawing.Color start, System.Drawing.Color end, int steps)
+    {
+        return GetGradientColors(start, end, steps, 0, steps);
+    }
+
+    public static List<System.Drawing.Color> GetGradientColors(System.Drawing.Color start, System.Drawing.Color end, int steps, int firstStep, int lastStep)
+    {
+        var colorList = new List<System.Drawing.Color>();
+
+        if (steps <= 0 || firstStep < 0 || lastStep > steps)
+            return colorList;
+
+        int multiplyFactor = 1;
+        double aStep = (end.A - start.A) / steps;
+        double rStep = (end.R - start.R) / steps;
+        double gStep = (end.G - start.G) / steps;
+        double bStep = (end.B - start.B) / steps;
+
+        for (int i = firstStep; i < lastStep; i++)
+        {
+            var a = start.A + (int)(aStep * i * multiplyFactor);
+            var r = start.R + (int)(rStep * i * multiplyFactor);
+            var g = start.G + (int)(gStep * i * multiplyFactor);
+            var b = start.B + (int)(bStep * i * multiplyFactor);
+
+            colorList.Add(System.Drawing.Color.FromArgb(a, r, g, b));
+        }
+
+        return colorList;
+    }
+}

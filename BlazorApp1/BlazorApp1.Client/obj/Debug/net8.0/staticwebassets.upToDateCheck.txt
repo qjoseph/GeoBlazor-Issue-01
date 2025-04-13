@@ -1,0 +1,4 @@
+wwwroot\appsettings.Development.json
+wwwroot\appsettings.json
+wwwroot\sample-data\theft-reports.json
+wwwroot\sample-data\theft-reports-positions.json
